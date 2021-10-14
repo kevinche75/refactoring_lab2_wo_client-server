@@ -1,21 +1,28 @@
 package ru.itmo.logicalFunctions;
 
-import ru.itmo.exceptions.NoValueException;
+import ru.itmo.exceptions.ValueException;
 import ru.itmo.ioValues.interfaces.IOElement;
-import ru.itmo.ioValues.interfaces.LogicFunctionInput;
 
-public class NOT implements LogicFunctionInput {
+public class NOT implements IOElement {
 
+    public final static String COMMAND_NAME = "not";
     private final String name;
-    IOElement<?> input;
+    IOElement input;
 
     public NOT(String name){
         this.name = name;
     }
 
     @Override
-    public void setInput(IOElement<?> value) {
-        input = value;
+    public void setInput(Object value) {
+        if (value instanceof IOElement) {
+            input = (IOElement) value;
+        }
+    }
+
+    @Override
+    public String getCommandName() {
+        return String.format("%s:%s", name, COMMAND_NAME);
     }
 
     @Override
@@ -24,10 +31,19 @@ public class NOT implements LogicFunctionInput {
     }
 
     @Override
-    public Boolean getOutput() throws NoValueException {
+    public Boolean getOutput() throws ValueException {
         if (input == null){
-            throw new NoValueException("");
+            throw new ValueException("");
         }
         return !input.getOutput();
+    }
+
+    @Override
+    public String getFullName() {
+        String inputString = " ";
+        if (input != null){
+            inputString = input.getFullName();
+        }
+        return String.format("%s(%s)", getCommandName(), input);
     }
 }

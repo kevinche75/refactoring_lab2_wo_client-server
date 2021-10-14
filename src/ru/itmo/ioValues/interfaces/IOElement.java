@@ -1,6 +1,8 @@
 package ru.itmo.ioValues.interfaces;
 
-public interface IOElement<T> extends NamedElement, Output{
+public interface IOElement extends NamedElement, Output{
 
-    public void setInput(T input);
+    void setInput(Object input);
+    String getCommandName();
+    String getFullName();
 }

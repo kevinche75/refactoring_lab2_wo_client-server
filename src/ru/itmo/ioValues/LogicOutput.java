@@ -1,29 +1,45 @@
 package ru.itmo.ioValues;
 
-import ru.itmo.exceptions.NoValueException;
+import ru.itmo.exceptions.ValueException;
 import ru.itmo.ioValues.interfaces.IOElement;
-import ru.itmo.ioValues.interfaces.LogicFunctionInput;
 
-public class LogicOutput implements LogicFunctionInput {
+public class LogicOutput implements IOElement {
 
-    IOElement<?> element;
+    IOElement element;
     private final String name;
+    public final static String COMMAND_NAME = "out";
 
     public LogicOutput(String name){
         this.name = name;
     }
 
     @Override
-    public void setInput(IOElement<?> input) {
-        this.element = input;
+    public void setInput(Object input) {
+        if (input instanceof IOElement) {
+            this.element = (IOElement) input;
+        }
     }
 
     @Override
-    public Boolean getOutput() throws NoValueException {
+    public String getCommandName() {
+        return String.format("%s:%s", name, COMMAND_NAME);
+    }
+
+    @Override
+    public String getFullName() {
+        String input = " ";
+        if (element != null){
+            input = element.getFullName();
+        }
+        return String.format("%s(%s)", getCommandName(), input);
+    }
+
+    @Override
+    public Boolean getOutput() throws ValueException {
         if (element != null) {
             return element.getOutput();
         } else {
-            throw new NoValueException("");
+            throw new ValueException("");
         }
     }
 
